@@ -28,7 +28,7 @@ jobs:
       - name: Select Swift 5.10
         uses: SwiftyLab/setup-swift@latest
         with:
-          swift-version: "5.10.0"
+          check-latest: true
       - name: Report Swift Version
         if: runner.os == 'macOS'
         run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version # Swift 5.1.0            
