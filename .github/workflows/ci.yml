@@ -20,10 +20,16 @@ jobs:
       group: ${{ github.ref }}
       cancel-in-progress: true    
     steps:
-      
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "5.10.0"
+          
+      - name: Get swift version
+        run: swift --version # Swift 5.10.0
+        
       - name: Get swift version in macOS
         if: runner.os == 'macOS'
-        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version
+        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version # Swift 5.1.0            
 
       - name: Checkout
         uses: actions/checkout@v4
