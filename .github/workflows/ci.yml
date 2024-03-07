@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    paths-ignore:
+      - '.github/**.md'
+      - 'README.md'
+    branches:
+      - main
+  pull_request:
+    paths-ignore:
+      - '.github/**.md'
+      - 'README.md'
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  test:
+    runs-on: macos-14
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: true    
+    steps:
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          development: true          
+      
+      - name: Get swift version in macOS
+        if: runner.os == 'macOS'
+        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache SPM
+        uses: actions/cache@v4
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Test
+        run: .scripts/ci-test.sh
