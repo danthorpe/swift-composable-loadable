@@ -13,34 +13,31 @@ on:
       - 'README.md'
     types: [opened, synchronize, reopened, ready_for_review]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true    
+
 jobs:
   test:
-    runs-on: macos-14
-    concurrency:
-      group: ${{ github.ref }}
-      cancel-in-progress: true    
+    name: Tests
+    runs-on: macos-14    
     steps:
-      - uses: SwiftyLab/setup-swift@latest
+      - uses: actions/checkout@v4
+      - name: Select Xcode 15.2
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+      - name: Select Swift 5.10
+        uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: "5.10.0"
-          
-      - name: Get swift version
-        run: swift --version # Swift 5.10.0
-        
-      - name: Get swift version in macOS
+      - name: Report Swift Version
         if: runner.os == 'macOS'
         run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version # Swift 5.1.0            
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Cache SPM
         uses: actions/cache@v4
         with:
           path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          key: v1-${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-spm-
-
+            v1-${{ runner.os }}-spm-
       - name: Test
-        run: .scripts/ci-test.sh
+        run: make test-all
