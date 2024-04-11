@@ -12,7 +12,8 @@ public struct LoadableView<
 > {
 
   public typealias SuccessContentBuilder = (LoadedValueStoreWith<Request, Feature>) -> SuccessView
-  public typealias FailureContentBuilder = (LoadedFailureStoreWith<Request, Error, Feature>) -> FailureView
+  public typealias FailureContentBuilder = (LoadedFailureStoreWith<Request, Error, Feature>) ->
+    FailureView
   public typealias LoadingContentBuilder = (Request) -> FailureView
 
   let store: LoadableStoreWith<Request, Feature>
@@ -54,9 +55,10 @@ public struct LoadableView<
 
   struct ViewState: Equatable {
     static func == (lhs: Self, rhs: Self) -> Bool {
-      let bools = lhs.isPending == rhs.isPending
-      && lhs.isNotRefreshing == rhs.isNotRefreshing
-      && lhs.isLoaded == rhs.isLoaded
+      let bools =
+        lhs.isPending == rhs.isPending
+        && lhs.isNotRefreshing == rhs.isNotRefreshing
+        && lhs.isLoaded == rhs.isLoaded
       switch (lhs.isActiveRequest, rhs.isActiveRequest) {
       case (.none, .none):
         return bools
@@ -66,7 +68,7 @@ public struct LoadableView<
         return false
       }
     }
-    
+
     let isPending: Bool
     let isLoaded: Bool
     let isNotRefreshing: Bool

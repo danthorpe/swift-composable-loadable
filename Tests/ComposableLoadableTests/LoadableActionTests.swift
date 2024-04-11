@@ -19,8 +19,8 @@ private struct TestReducer {
     EmptyReducer()
   }
 }
-private struct TestEquatableErrorA: Equatable, Error { }
-private struct TestEquatableErrorB: Equatable, Error { }
+private struct TestEquatableErrorA: Equatable, Error {}
+private struct TestEquatableErrorB: Equatable, Error {}
 
 @Suite("LoadableAction Tests")
 struct LoadableActionTests {
@@ -37,16 +37,16 @@ struct LoadableActionTests {
     #expect(Action.finished("Hello", .success(100)) != Action.finished("Hello", .success(200)))
     #expect(Action.finished("Hello", .success(100)) != Action.finished("Goodbye", .success(100)))
     #expect(
-      Action.finished("Hello", .failure(TestEquatableErrorA())) ==
       Action.finished("Hello", .failure(TestEquatableErrorA()))
+        == Action.finished("Hello", .failure(TestEquatableErrorA()))
     )
     #expect(
-      Action.finished("Hello", .failure(TestEquatableErrorA())) !=
-      Action.finished("Goodbye", .failure(TestEquatableErrorA()))
+      Action.finished("Hello", .failure(TestEquatableErrorA()))
+        != Action.finished("Goodbye", .failure(TestEquatableErrorA()))
     )
     #expect(
-      Action.finished("Hello", .failure(TestEquatableErrorA())) !=
-      Action.finished("Hello", .failure(TestEquatableErrorB()))
+      Action.finished("Hello", .failure(TestEquatableErrorA()))
+        != Action.finished("Hello", .failure(TestEquatableErrorB()))
     )
   }
 }

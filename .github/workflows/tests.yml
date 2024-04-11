@@ -15,7 +15,7 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true    
+  cancel-in-progress: true
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Report Swift Version
         run: xcrun swift --version
-      
+
       - name: Checkout Package
         uses: actions/checkout@v4
 

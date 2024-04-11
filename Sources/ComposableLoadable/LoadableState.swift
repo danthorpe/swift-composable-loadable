@@ -184,7 +184,6 @@ public struct LoadableState<Request, Value> {
       switch current {
       case .pending:
         assertionFailure("Unable to set wrappedValue from the pending state.")
-        break
       case .active(let request):
         loadedValue = .init(request: request, value: newValue)
       case .success(let success):

@@ -9,7 +9,8 @@ public protocol Loadable<Request> {
 extension LoadableState where Value: Loadable {
 
   public init(wrappedValue: Value? = nil) where Request == Value.Request {
-    assert(wrappedValue == nil, 
+    assert(
+      wrappedValue == nil,
       """
       Cannot create `LoadableState` with a non-nil value, without the equivalent
       `Value.Request` value.\

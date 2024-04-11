@@ -18,4 +18,4 @@ extension DependencyValues {
   }
 }
 
-struct TestFeatureClientError: Hashable, Error { }
+struct TestFeatureClientError: Hashable, Error {}

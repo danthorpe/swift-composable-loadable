@@ -1,5 +1,5 @@
-import XCTest
 import Testing
+import XCTest
 
 final class AllTests: XCTestCase {
   func testAll() async {
