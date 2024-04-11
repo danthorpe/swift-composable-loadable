@@ -26,7 +26,6 @@ jobs:
     runs-on: macos-14
     steps:
       - name: Report Swift Version
-        if: runner.os == 'macOS'
         run: xcrun swift --version
       
       - name: Checkout Package
