@@ -27,7 +27,9 @@ extension Reducer {
   // Integrate a Loadable child domain which does not require a Request type
   public func loadable<ChildState, ChildAction, Child: Reducer>(
     _ toLoadableState: WritableKeyPath<State, LoadableState<EmptyLoadRequest, ChildState>>,
-    action toLoadingAction: CaseKeyPath<Action, LoadingAction<EmptyLoadRequest, ChildState, ChildAction>>,
+    action toLoadingAction: CaseKeyPath<
+      Action, LoadingAction<EmptyLoadRequest, ChildState, ChildAction>
+    >,
     @ReducerBuilder<ChildState, ChildAction> child: () -> Child,
     load: @escaping @Sendable (State) async throws -> ChildState,
     fileID: StaticString = #fileID,
@@ -131,7 +133,7 @@ private struct LoadingReducer<
     self.toChildAction = toLoadingAction.appending(path: \.loaded)
   }
 
-  struct CancelID: Hashable { }
+  struct CancelID: Hashable {}
 
   func reduce(into state: inout State, action: Action) -> Effect<Action> {
     let parentState = state
@@ -141,13 +143,14 @@ private struct LoadingReducer<
 
           func send(_ request: Request) -> Effect<ThisLoadingAction> {
             loadableState.becomeActive(request)
-            return .run { send in
-              let value = try await client.load(request, parentState)
-              await send(.finished(request, .success(value)))
-            } catch: { error, send in
-              await send(.finished(request, .failure(error)))
-            }
-            .cancellable(id: CancelID(), cancelInFlight: true)
+            return
+              .run { send in
+                let value = try await client.load(request, parentState)
+                await send(.finished(request, .success(value)))
+              } catch: { error, send in
+                await send(.finished(request, .failure(error)))
+              }
+              .cancellable(id: CancelID(), cancelInFlight: true)
           }
 
           switch loadingAction {
@@ -174,6 +177,7 @@ private struct LoadingReducer<
       // Run the parent reducer
       parent
 
-    }.reduce(into: &state, action: action)
+    }
+    .reduce(into: &state, action: action)
   }
 }

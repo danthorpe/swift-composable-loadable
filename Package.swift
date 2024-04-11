@@ -1,6 +1,6 @@
 // swift-tools-version: 5.10
-import PackageDescription
 import CompilerPluginSupport
+import PackageDescription
 
 var package = Package(name: "composable-loadable")
 
@@ -10,7 +10,7 @@ package.platforms = [
   .macOS(.v13),
   .iOS(.v16),
   .tvOS(.v16),
-  .watchOS(.v9)
+  .watchOS(.v9),
 ]
 
 // MARK: - 🧸 Module Names
@@ -26,44 +26,46 @@ let 📦 = Module.builder(
   withDefaults: .init(
     name: "Basic Module",
     unitTestsWith: [
-      .swiftTesting,
+      .swiftTesting
     ],
     swiftSettings: [
       .enableUpcomingFeature("BareSlashRegexLiterals")
     ],
     plugins: [
- 
+
     ]
   )
 )
 
 // MARK: - 🎯 Targets
 
-ComposableLoadable <+ 📦 {
-  $0.dependsOn = [
-    Utilities
-  ]
-  $0.with += [
-    .composableArchitecture
-  ]
-  $0.unitTestsWith += [
-    .swiftTesting
-  ]
-}
-Utilities <+ 📦 {
-  $0.createUnitTests = false
-}
-
+ComposableLoadable
+  <+ 📦 {
+    $0.dependsOn = [
+      Utilities
+    ]
+    $0.with += [
+      .composableArchitecture
+    ]
+    $0.unitTestsWith += [
+      .swiftTesting
+    ]
+  }
+Utilities
+  <+ 📦 {
+    $0.createUnitTests = false
+  }
 
 /// ⚙️ Swift Settings
 /// ------------------------------------------------------------
 
 extension [SwiftSetting] {
   static let concurrency: Self = [
-    .unsafeFlags([
-      "-Xfrontend", "-warn-concurrency",
-      "-Xfrontend", "-enable-actor-data-race-checks"
-    ], .when(configuration: .debug))
+    .unsafeFlags(
+      [
+        "-Xfrontend", "-warn-concurrency",
+        "-Xfrontend", "-enable-actor-data-race-checks",
+      ], .when(configuration: .debug))
   ]
 }
 
@@ -82,12 +84,11 @@ package.dependencies = [
 extension Target.Dependency {
   static let composableArchitecture: Target.Dependency = .product(
     name: "ComposableArchitecture", package: "swift-composable-architecture"
-  )  
+  )
   static let swiftTesting: Target.Dependency = .product(
     name: "Testing", package: "swift-testing"
   )
 }
-
 
 /// ------------------------------------------------------------
 /// ✂️ Copy everything below this into other Package.swift files
@@ -199,7 +200,8 @@ struct Module {
     var copy = self
     copy.dependsOn = Set(dependsOn).union(other.dependsOn).sorted()
     copy.unitTestsDependsOn = Set(unitTestsDependsOn).union(other.unitTestsDependsOn).sorted()
-    copy.snapshotTestsDependsOn = Set(snapshotTestsDependsOn).union(other.snapshotTestsDependsOn).sorted()
+    copy.snapshotTestsDependsOn = Set(snapshotTestsDependsOn).union(other.snapshotTestsDependsOn)
+      .sorted()
     return copy
   }
 
@@ -283,9 +285,9 @@ extension Package {
         .testTarget(
           name: module.name.tests,
           dependencies: [module.name.dependency]
-          + module.unitTestsDependsOn.map { $0.dependency }
-          + module.unitTestsWith
-          + [ ],
+            + module.unitTestsDependsOn.map { $0.dependency }
+            + module.unitTestsWith
+            + [],
           path: path,
           plugins: module.plugins
         )
@@ -298,8 +300,8 @@ extension Package {
         .testTarget(
           name: module.name.snapshotTests,
           dependencies: [module.name.dependency]
-          + module.snapshotTestsDependsOn.map { $0.dependency }
-          + [ ],
+            + module.snapshotTestsDependsOn.map { $0.dependency }
+            + [],
           path: path,
           plugins: module.plugins
         )

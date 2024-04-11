@@ -1,4 +1,4 @@
-  import Testing
+import Testing
 import Utilities
 
 @testable import ComposableLoadable
@@ -7,7 +7,7 @@ private struct TestState: Equatable {
   let value: Int
 }
 
-private struct TestEquatableError: Equatable, Error { }
+private struct TestEquatableError: Equatable, Error {}
 
 @Suite("LoadableState Tests")
 struct LoadableStateTests {

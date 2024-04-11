@@ -2,7 +2,9 @@ import ComposableArchitecture
 import SwiftUI
 
 public struct FailureView<Request, Failure: Error, State, Action, Content: View> {
-  public typealias FailureStore = Store<LoadedFailure<Request, Failure>, LoadingAction<Request, State, Action>>
+  public typealias FailureStore = Store<
+    LoadedFailure<Request, Failure>, LoadingAction<Request, State, Action>
+  >
   public typealias ContentBuilder = (Failure, Request) -> Content
 
   let store: FailureStore
