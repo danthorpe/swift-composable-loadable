@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Report Swift Version
         if: runner.os == 'macOS'
-        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version
+        run: xcrun swift --version
       
       - name: Checkout Package
         uses: actions/checkout@v4
