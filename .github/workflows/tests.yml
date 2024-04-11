@@ -17,21 +17,21 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true    
 
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
+
 jobs:
   test:
     name: Tests
-    runs-on: macos-14    
+    runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
-      - name: Select Xcode 15.2
-        run: sudo xcode-select -s /Applications/Xcode_15.2.app
-      - name: Select Swift 5.10
-        uses: SwiftyLab/setup-swift@latest
-        with:
-          check-latest: true
       - name: Report Swift Version
         if: runner.os == 'macOS'
-        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version # Swift 5.1.0            
+        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version
+      
+      - name: Checkout Package
+        uses: actions/checkout@v4
+
       - name: Cache SPM
         uses: actions/cache@v4
         with:
