@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+    paths-ignore:
+      - '.github/**.md'
+      - 'README.md'
+    branches:
+      - main
+  pull_request:
+    paths-ignore:
+      - '.github/**.md'
+      - 'README.md'
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true    
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
+
+jobs:
+  test:
+    name: Tests
+    runs-on: macos-14
+    steps:
+      - name: Report Swift Version
+        run: xcrun swift --version
+      
+      - name: Checkout Package
+        uses: actions/checkout@v4
+
+      - name: Cache SPM
+        uses: actions/cache@v4
+        with:
+          path: .build
+          key: v1-${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            v1-${{ runner.os }}-spm-
+      - name: Test
+        run: make test-all
