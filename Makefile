@@ -10,3 +10,14 @@ default: test-all
 
 test-all:
 	swift test
+
+docs:
+	mkdir -p $(output)/$(tag)/$(target)
+	swift package \
+	--allow-writing-to-directory $(output)/$(tag)/$(target) \
+	generate-documentation --target $(target) \
+	--output-path $(output)/$(tag)/$(target) \
+	--transform-for-static-hosting \
+	--hosting-base-path /$(basepath)/$(tag)/$(target) \
+	&& echo "✅ Documentation generated for $(target) @ $(tag) release." \
+	|| echo "⚠️ Documentation skipped for $(target) @ $(tag)."

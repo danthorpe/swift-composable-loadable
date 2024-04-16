@@ -1,0 +1,68 @@
+# Build and deploy DocC to GitHub pages. Based off of @karwa's work here:
+# https://github.com/karwa/swift-url/blob/main/.github/workflows/docs.yml
+# and PointFree's work here:
+# https://github.com/pointfreeco/swift-composable-architecture/blob/main/.github/workflows/documentation.yml
+name: Docs
+
+on:
+  release:
+    types:
+      - published
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout docs branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: docs-out
+
+      - name: Build documentation
+        run: >
+          rm -rf docs-out/.git;
+          rm -rf docs-out/main;
+          git tag -l --sort=-v:refname | grep -e "\d\+\.\d\+.0" | tail -n +6 | xargs -I {} rm -rf {};
+
+          for tag in $(echo "main"; git tag -l --sort=-v:refname | grep -e "\d\+\.\d\+.0" | head -6);
+          do
+            if [ -d "docs-out/$tag/data/documentation/composableloadable" ]
+            then
+              echo "✅ Documentation for $tag already exists.";
+            else
+              echo "⏳ Generating documentation for @ $tag release.";
+              rm -rf "docs-out/$tag";
+
+              git checkout .;
+              git checkout "$tag";
+              if [ -f ".github/workflows/docs.yml" ]
+              then
+                make docs tag="$tag" output=docs-out basepath=composable-loadable target=ComposableLoadable
+              fi;
+            fi;
+          done
+
+      - name: Fix permissions
+        run: 'sudo chown -R $USER docs-out'
+
+      - name: Publish documentation to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: docs-out
+          single-commit: true
