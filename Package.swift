@@ -30,9 +30,6 @@ let 📦 = Module.builder(
     ],
     swiftSettings: [
       .enableUpcomingFeature("BareSlashRegexLiterals")
-    ],
-    plugins: [
-
     ]
   )
 )
@@ -77,8 +74,9 @@ extension [SwiftSetting] {
 // MARK: - 👜 3rd Party Dependencies
 
 package.dependencies = [
-  .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.9.0"),
+  .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.3.0"),
   .package(url: "https://github.com/apple/swift-testing", branch: "main"),
+  .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.9.0"),
 ]
 
 extension Target.Dependency {
