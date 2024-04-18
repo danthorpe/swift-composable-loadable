@@ -14,7 +14,7 @@ public struct LoadedFailure<Request, Failure: Error> {
 
 @dynamicMemberLookup
 @propertyWrapper
-public struct LoadableState<Request, Value> {
+public struct LoadableState<Request, Value>: Perceptible {
 
   public static var pending: Self {
     .init(current: .pending)
@@ -58,6 +58,23 @@ public struct LoadableState<Request, Value> {
   }
 
   internal var previous: State?
+
+  private let _$perceptionRegistrar = Perception.PerceptionRegistrar()
+
+  internal nonisolated func access<Member>(
+    keyPath: KeyPath<Self, Member>,
+    file: StaticString = #file,
+    line: UInt = #line
+  ) {
+    _$perceptionRegistrar.access(self, keyPath: keyPath, file: file, line: line)
+  }
+
+  internal nonisolated func withMutation<Member, MutationResult>(
+    keyPath: KeyPath<Self, Member>,
+    _ mutation: () throws -> MutationResult
+  ) rethrows -> MutationResult {
+    try _$perceptionRegistrar.withMutation(of: self, keyPath: keyPath, mutation)
+  }
 
   internal init(current: State, previous: State? = nil) {
     self.current = current
@@ -130,6 +147,7 @@ public struct LoadableState<Request, Value> {
 
   package var loadedValue: LoadedValue<Request, Value>? {
     get {
+      access(keyPath: \.current)
       switch (current, previous) {
       case (.success(let value), _), (_, .success(let value)):
         return value
@@ -138,16 +156,19 @@ public struct LoadableState<Request, Value> {
       }
     }
     set {
-      guard let newValue else {
-        current = .pending
-        return
+      withMutation(keyPath: \.current) {
+        guard let newValue else {
+          current = .pending
+          return
+        }
+        current = .success(newValue)
       }
-      current = .success(newValue)
     }
   }
 
   package var loadedFailure: LoadedFailure<Request, Error>? {
     get {
+      access(keyPath: \.current)
       switch (current, previous) {
       case (.failure(let value), _), (_, .failure(let value)):
         return value
@@ -156,11 +177,13 @@ public struct LoadableState<Request, Value> {
       }
     }
     set {
-      guard let newValue else {
-        current = .pending
-        return
+      withMutation(keyPath: \.current) {
+        guard let newValue else {
+          current = .pending
+          return
+        }
+        current = .failure(newValue)
       }
-      current = .failure(newValue)
     }
   }
 
@@ -170,8 +193,15 @@ public struct LoadableState<Request, Value> {
   }
 
   public var projectedValue: Self {
-    get { self }
-    set { self = newValue }
+    get {
+      access(keyPath: \.self)
+      return self
+    }
+    set {
+      withMutation(keyPath: \.self) {
+        self = newValue
+      }
+    }
   }
 
   public internal(set) var wrappedValue: Value? {
