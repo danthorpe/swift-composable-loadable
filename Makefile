@@ -12,12 +12,12 @@ test-all:
 	swift test
 
 docs:
-	mkdir -p $(output)/$(tag)/$(target)
+	mkdir -p $(output)/$(tag)
 	swift package \
-	--allow-writing-to-directory $(output)/$(tag)/$(target) \
+	--allow-writing-to-directory $(output)/$(tag) \
 	generate-documentation --target $(target) \
-	--output-path $(output)/$(tag)/$(target) \
+	--output-path $(output)/$(tag) \
 	--transform-for-static-hosting \
-	--hosting-base-path /$(basepath)/$(tag)/$(target) \
+	--hosting-base-path /$(basepath)/$(tag) \
 	&& echo "✅ Documentation generated for $(target) @ $(tag) release." \
 	|| echo "⚠️ Documentation skipped for $(target) @ $(tag)."
