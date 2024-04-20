@@ -54,7 +54,7 @@ jobs:
               git checkout "$tag";
               if [ -f ".github/workflows/docs.yml" ]
               then
-                make docs tag="$tag" output=docs-out basepath=composable-loadable target=ComposableLoadable
+                make docs tag="$tag" output=docs-out basepath=swift-composable-loadable target=ComposableLoadable
               fi;
             fi;
           done
