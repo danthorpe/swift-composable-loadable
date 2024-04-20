@@ -2,7 +2,7 @@
 import CompilerPluginSupport
 import PackageDescription
 
-var package = Package(name: "composable-loadable")
+var package = Package(name: "swift-composable-loadable")
 
 // MARK: 💫 Package Customization
 
@@ -38,6 +38,7 @@ let 📦 = Module.builder(
 
 ComposableLoadable
   <+ 📦 {
+    $0.createProduct = .library
     $0.dependsOn = [
       Utilities
     ]
@@ -112,7 +113,7 @@ extension String {
 struct Module {
   enum ProductType {
     case executable
-    case library(Product.Library.LibraryType? = nil)
+    case library
   }
   enum TargetType {
     case standard
@@ -218,11 +219,10 @@ extension Package {
   func add(module: Module) {
     // Check should create a product
     switch module.createProduct {
-    case let .library(type):
+    case .library:
       products.append(
         .library(
           name: module.name,
-          type: type,
           targets: module.productTargets
         )
       )
