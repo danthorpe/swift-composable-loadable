@@ -1,33 +1,33 @@
 import ComposableArchitecture
 import SwiftUI
-import Utilities
 
 public struct LoadableView<
   Request,
-  Feature: Reducer,
-  SuccessView: View,
-  FailureView: View,
-  LoadingView: View,
-  PendingView: View
-> {
+  State,
+  Action,
+  Success: View,
+  Failure: View,
+  Loading: View,
+  Pending: View
+>: View {
 
-  public typealias SuccessContentBuilder = (LoadedValueStoreWith<Request, Feature>) -> SuccessView
-  public typealias FailureContentBuilder = (LoadedFailureStoreWith<Request, Error, Feature>) ->
-    FailureView
-  public typealias LoadingContentBuilder = (Request) -> FailureView
+  public typealias SuccessViewBuilder = @MainActor (LoadedValueStore<Request, State, Action>) -> Success
+  public typealias FailureViewBuilder = @MainActor (LoadedFailureStore<Request, Error, State, Action>) ->
+    Failure
+  public typealias LoadingViewBuilder = @MainActor (Request) -> Loading
 
-  let store: LoadableStoreWith<Request, Feature>
-  let successView: SuccessContentBuilder
-  let failureView: FailureContentBuilder
-  let loadingView: LoadingContentBuilder
-  let pendingView: PendingView
+  let store: LoadableStore<Request, State, Action>
+  let successView: SuccessViewBuilder
+  let failureView: FailureViewBuilder
+  let loadingView: LoadingViewBuilder
+  let pendingView: Pending
 
   public init(
-    _ store: LoadableStoreWith<Request, Feature>,
-    @ViewBuilder pending: () -> PendingView,
-    @ViewBuilder loading: @escaping LoadingContentBuilder,
-    @ViewBuilder failure: @escaping FailureContentBuilder,
-    @ViewBuilder success: @escaping SuccessContentBuilder
+    _ store: LoadableStore<Request, State, Action>,
+    @ViewBuilder success: @escaping SuccessViewBuilder,
+    @ViewBuilder failure: @escaping FailureViewBuilder,
+    @ViewBuilder loading: @escaping LoadingViewBuilder,
+    @ViewBuilder pending: () -> Pending
   ) {
     self.store = store
     self.successView = success
@@ -36,20 +36,45 @@ public struct LoadableView<
     self.pendingView = pending()
   }
 
-  public init(
-    _ store: LoadableStoreWith<Request, Feature>,
-    @ViewBuilder pending: () -> PendingView,
-    @ViewBuilder loading: @escaping LoadingContentBuilder,
-    @ViewBuilder failure: @escaping FailureContentBuilder,
-    @ViewBuilder feature: @escaping (StoreOf<Feature>) -> SuccessView
-  ) {
-    self.init(store, pending: pending, loading: loading, failure: failure) {
-      feature(
-        $0.scope(
-          state: \.value,
-          action: \.loaded
-        )
-      )
+  public init<SuccessView: View, ErrorView: View>(
+    _ store: LoadableStore<Request, State, Action>,
+    @ViewBuilder feature: @escaping (Store<State, Action>) -> SuccessView,
+    @ViewBuilder onError: @escaping (any Error, Request) -> ErrorView,
+    @ViewBuilder onActive: @escaping (Request) -> Loading,
+    onAppear: @escaping () -> Void = {}
+  )
+  where
+    Pending == OnAppearView,
+    Failure == FailureView<Request, State, Action, ErrorView>,
+    Success == WithPerceptionTracking<SuccessView>
+  {
+    self.init(store) { loadedStore in
+      WithPerceptionTracking {
+        feature(loadedStore.scope(state: \.value, action: \.loaded))
+      }
+    } failure: {
+      FailureView(store: $0, content: onError)
+    } loading: {
+      onActive($0)
+    } pending: {
+      OnAppearView(block: onAppear)
+    }
+  }
+
+  public init<SuccessView: View, ErrorView: View>(
+    loadOnAppear store: LoadableStore<Request, State, Action>,
+    @ViewBuilder feature: @escaping (Store<State, Action>) -> SuccessView,
+    @ViewBuilder onError: @escaping (any Error, Request) -> ErrorView,
+    @ViewBuilder onActive: @escaping (Request) -> Loading
+  )
+  where
+    Request == EmptyLoadRequest,
+    Pending == OnAppearView,
+    Failure == FailureView<Request, State, Action, ErrorView>,
+    Success == WithPerceptionTracking<SuccessView>
+  {
+    self.init(store, feature: feature, onError: onError, onActive: onActive) {
+      store.send(.load)
     }
   }
 
@@ -74,16 +99,13 @@ public struct LoadableView<
     let isNotRefreshing: Bool
     let isActiveRequest: Request?
 
-    init(state: LoadableState<Request, Feature.State>) {
+    init(state: LoadableState<Request, State>) {
       self.isPending = state.isPending
       self.isLoaded = state.isSuccess || state.isFailure
       self.isNotRefreshing = false == state.isRefreshing
       self.isActiveRequest = state.isActive ? state.request : nil
     }
   }
-}
-
-extension LoadableView: View {
 
   public var body: some View {
     WithViewStore(store, observe: ViewState.init) { viewStore in

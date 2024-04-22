@@ -20,11 +20,3 @@ extension LoadableState where Value: Loadable {
     self.init(current: .pending)
   }
 }
-
-public typealias LoadableStateOf<R: Reducer> = LoadableState<
-  R.State.Request, R.State
-> where R.State: Loadable
-
-public typealias LoadableActionOf<R: Reducer> = LoadingAction<
-  R.State.Request, R.State, R.Action
-> where R.State: Loadable

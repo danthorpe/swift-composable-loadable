@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import Testing
-import Utilities
 
 @testable import ComposableLoadable
 

@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import Foundation
-import Utilities
 
 public struct LoadedValue<Request, Value> {
   package internal(set) var request: Request
@@ -170,8 +169,12 @@ public struct LoadableState<Request, Value> {
   }
 
   public var projectedValue: Self {
-    get { self }
-    set { self = newValue }
+    get {
+      self
+    }
+    set {
+      self = newValue
+    }
   }
 
   public internal(set) var wrappedValue: Value? {
