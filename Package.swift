@@ -39,19 +39,12 @@ let 📦 = Module.builder(
 ComposableLoadable
   <+ 📦 {
     $0.createProduct = .library
-    $0.dependsOn = [
-      Utilities
-    ]
     $0.with += [
       .composableArchitecture
     ]
     $0.unitTestsWith += [
       .swiftTesting
     ]
-  }
-Utilities
-  <+ 📦 {
-    $0.createUnitTests = false
   }
 
 /// ⚙️ Swift Settings

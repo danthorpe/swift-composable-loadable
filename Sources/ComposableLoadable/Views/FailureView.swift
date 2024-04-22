@@ -1,16 +1,16 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct FailureView<Request, Failure: Error, State, Action, Content: View> {
-  public typealias FailureStore = Store<
-    LoadedFailure<Request, Failure>, LoadingAction<Request, State, Action>
-  >
-  public typealias ContentBuilder = (Failure, Request) -> Content
+public struct FailureView<Request, State, Action, Content: View> {
+  typealias ContentBuilder = (any Error, Request) -> Content
 
-  let store: FailureStore
+  let store: LoadedFailureStore<Request, Error, State, Action>
   let content: ContentBuilder
 
-  public init(store: FailureStore, @ViewBuilder content: @escaping ContentBuilder) {
+  init(
+    store: LoadedFailureStore<Request, Error, State, Action>,
+    @ViewBuilder content: @escaping ContentBuilder
+  ) {
     self.store = store
     self.content = content
   }
@@ -18,7 +18,7 @@ public struct FailureView<Request, Failure: Error, State, Action, Content: View>
 
 extension FailureView: View {
   public var body: some View {
-    WithViewStore(store, observe: { $0 }) { viewStore in
+    WithViewStore(store, observe: { $0 }, removeDuplicates: _isEqual) { viewStore in
       content(viewStore.error, viewStore.request)
     }
   }

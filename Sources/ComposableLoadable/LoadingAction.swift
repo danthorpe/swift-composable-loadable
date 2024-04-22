@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import Foundation
-import Utilities
 
 @CasePathable
 public enum LoadingAction<Request, Value, Action> {

@@ -2,7 +2,7 @@
 
 // MARK: Equatable
 
-package func _isEqual(_ lhs: Any, _ rhs: Any) -> Bool {
+func _isEqual(_ lhs: Any, _ rhs: Any) -> Bool {
   (lhs as? any Equatable)?.isEqual(other: rhs) ?? false
 }
 
@@ -14,7 +14,7 @@ extension Equatable {
 
 // MARK: Identifiable
 
-package func _identifiableID(_ value: Any) -> AnyHashable? {
+func _identifiableID(_ value: Any) -> AnyHashable? {
   func open(_ value: some Identifiable) -> AnyHashable {
     value.id
   }
