@@ -74,7 +74,7 @@ public struct LoadableState<Request, Value> {
     }
   }
 
-  public init(request: Request, wrappedValue: Value?) {
+  public init(wrappedValue: Value?, request: Request) {
     self.init(request: request, wrappedValue.map { .success($0) })
   }
 
@@ -223,6 +223,10 @@ public struct LoadableState<Request, Value> {
 extension LoadableState where Request == EmptyLoadRequest {
   public static var active: Self {
     .init(current: .active, previous: .pending)
+  }
+
+  public init(wrappedValue: Value?) {
+    self.init(wrappedValue: wrappedValue, request: EmptyLoadRequest())
   }
 
   public init(success value: Value) {

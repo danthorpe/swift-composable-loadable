@@ -16,7 +16,6 @@ package.platforms = [
 // MARK: - 🧸 Module Names
 
 let ComposableLoadable = "ComposableLoadable"
-let Utilities = "Utilities"
 
 let BasePath = "."
 

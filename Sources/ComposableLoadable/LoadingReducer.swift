@@ -24,7 +24,7 @@ extension Reducer {
     )
   }
 
-  // Integrate a Loadable child domain which does not require a Request type
+  /// Integrate a Loadable child domain which does not require a Request type
   public func loadable<ChildState, ChildAction, Child: Reducer>(
     _ toLoadableState: WritableKeyPath<State, LoadableState<EmptyLoadRequest, ChildState>>,
     action toLoadingAction: CaseKeyPath<
