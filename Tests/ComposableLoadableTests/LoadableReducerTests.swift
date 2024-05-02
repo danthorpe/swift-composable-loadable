@@ -1,57 +1,8 @@
+import CommonTestHelpers
 import ComposableArchitecture
 import Testing
 
 @testable import ComposableLoadable
-
-@Reducer
-private struct CounterFeature {
-  struct State: Equatable, ExpressibleByIntegerLiteral {
-    var count: Int
-    init(count: Int) {
-      self.count = count
-    }
-    init(integerLiteral value: Int) {
-      self.init(count: value)
-    }
-  }
-  enum Action: Equatable {
-    case incrementButtonTapped
-    case decrementButtonTapped
-  }
-  var body: some ReducerOf<Self> {
-    Reduce { state, action in
-      switch action {
-      case .incrementButtonTapped:
-        state.count += 1
-        return .none
-      case .decrementButtonTapped:
-        state.count -= 1
-        return .none
-      }
-    }
-  }
-}
-
-@Reducer
-private struct ParentFeature {
-  struct State: Equatable {
-    @LoadableState<String, CounterFeature.State> var counter
-  }
-  enum Action: Equatable {
-    case counter(LoadingActionWith<String, CounterFeature>)
-  }
-  @Dependency(\.testClient.getValue) var getValue
-  var body: some ReducerOf<Self> {
-    Reduce { _, _ in
-      return .none
-    }
-    .loadable(\.$counter, action: \.counter) {
-      CounterFeature()
-    } load: { request, _ in
-      CounterFeature.State(count: try await getValue(request))
-    }
-  }
-}
 
 @Suite("Reducer Basics")
 @MainActor struct ReducerBasicTests {
@@ -125,7 +76,7 @@ private struct ParentFeature {
     }
 
     await store.send(.counter(.loaded(.incrementButtonTapped))) {
-      $0.counter?.count = 101
+      $0.$counter.wrappedValue?.count = 101
     }
 
     await store.send(.counter(.refresh)) {
@@ -139,7 +90,7 @@ private struct ParentFeature {
     }
 
     await store.send(.counter(.loaded(.decrementButtonTapped))) {
-      $0.counter?.count = 99
+      $0.$counter.wrappedValue?.count = 99
     }
   }
 }

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.10
 import CompilerPluginSupport
 import PackageDescription
 
@@ -15,6 +15,7 @@ var package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.3.0"),
+    .package(url: "https://github.com/apple/swift-testing", branch: "main"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.10.0"),
   ],
   targets: [
@@ -31,10 +32,11 @@ var package = Package(
       ]
     ),
     .testTarget(
-      name: "ComposableLoadableXCTests",
+      name: "ComposableLoadableTests",
       dependencies: [
         "CommonTestHelpers",
         "ComposableLoadable",
+        .swiftTesting,
       ]
     ),
   ]
@@ -43,5 +45,8 @@ var package = Package(
 extension Target.Dependency {
   static let composableArchitecture: Target.Dependency = .product(
     name: "ComposableArchitecture", package: "swift-composable-architecture"
+  )
+  static let swiftTesting: Target.Dependency = .product(
+    name: "Testing", package: "swift-testing"
   )
 }

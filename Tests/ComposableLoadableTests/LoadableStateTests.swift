@@ -1,12 +1,7 @@
+import CommonTestHelpers
 import Testing
 
 @testable import ComposableLoadable
-
-private struct TestState: Equatable {
-  let value: Int
-}
-
-private struct TestEquatableError: Equatable, Error {}
 
 @Suite("LoadableState Tests")
 struct LoadableStateTests {
@@ -46,7 +41,7 @@ struct LoadableStateTests {
   @Test("isLoaded Failure")
   func isLoadedFailure() {
     var state = LoadableState<EmptyLoadRequest, TestState>(current: .active, previous: .pending)
-    state.finish(EmptyLoadRequest(), result: .failure(TestEquatableError()))
+    state.finish(EmptyLoadRequest(), result: .failure(EquatableErrorA()))
     #expect(state.isFailure)
     #expect(false == state.isSuccess)
     #expect(false == state.isActive)
@@ -116,10 +111,10 @@ struct LoadableStateTests {
     $state.becomeActive()
     #expect(state?.value == 42)
 
-    $state.finish(.failure(TestEquatableError()))
+    $state.finish(.failure(EquatableErrorA()))
     #expect(state == nil)
     #expect($state.isFailure)
     let error = try #require($state.error)
-    #expect(_isEqual(error, TestEquatableError()))
+    #expect(_isEqual(error, EquatableErrorA()))
   }
 }
