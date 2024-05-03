@@ -22,7 +22,7 @@ env:
 
 jobs:
   test:
-    name: Run tests on ${{ matrix.os }} with Swift version ${{ matrix.swift }}
+    name: Test ${{ matrix.os }} Swift ${{ matrix.swift }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -47,8 +47,12 @@ jobs:
         with:
           swift-version: ${{ matrix.swift }}
 
-      - name: Report Swift Version
-        run: xcrun swift --version
+      - name: Get swift version
+        run: swift --version
+
+      - name: Get swift version
+        if: runner.os == 'macOS'
+        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version
 
       - name: Checkout Package
         uses: actions/checkout@v4
