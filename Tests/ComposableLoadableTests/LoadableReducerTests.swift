@@ -1,7 +1,7 @@
-import CommonTestHelpers
 import ComposableArchitecture
 import Testing
 
+@testable import CommonTestHelpers
 @testable import ComposableLoadable
 
 @Suite("Reducer Basics")

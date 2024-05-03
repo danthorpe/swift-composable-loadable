@@ -1,6 +1,8 @@
-import CommonTestHelpers
 import Foundation
 import XCTest
+
+@testable import CommonTestHelpers
+@testable import ComposableLoadable
 
 final class LoadableStateTests: XCTest {
 

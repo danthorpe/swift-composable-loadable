@@ -48,10 +48,6 @@ jobs:
       - name: Get swift version
         run: swift --version
 
-      - name: Get swift version
-        if: runner.os == 'macOS'
-        run: xcrun --toolchain ${{ env.TOOLCHAINS }} swift --version
-
       - name: Checkout Package
         uses: actions/checkout@v4
 

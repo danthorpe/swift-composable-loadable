@@ -2,19 +2,17 @@ import ComposableArchitecture
 import ComposableLoadable
 
 @Reducer
-package struct ParentFeature {
+struct ParentFeature {
   @ObservableState
-  package struct State: Equatable {
+  struct State: Equatable {
     @ObservationStateIgnored
     @LoadableState<String, CounterFeature.State> package var counter
-    package init() {}
   }
-  package enum Action: Equatable {
+  enum Action: Equatable {
     case counter(LoadingActionWith<String, CounterFeature>)
   }
-  package init() {}
   @Dependency(\.testClient.getValue) var getValue
-  package var body: some ReducerOf<Self> {
+  var body: some ReducerOf<Self> {
     Reduce { _, _ in
       return .none
     }

@@ -1,6 +1,6 @@
-import CommonTestHelpers
 import Testing
 
+@testable import CommonTestHelpers
 @testable import ComposableLoadable
 
 @Suite("LoadableState Tests")
