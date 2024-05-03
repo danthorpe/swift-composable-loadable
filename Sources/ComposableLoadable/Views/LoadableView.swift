@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import ComposableArchitecture
 import SwiftUI
 
@@ -129,3 +130,4 @@ public struct LoadableView<
     }
   }
 }
+#endif

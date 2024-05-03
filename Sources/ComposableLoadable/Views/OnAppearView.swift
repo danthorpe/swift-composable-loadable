@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 public struct OnAppearView: View {
@@ -6,3 +7,4 @@ public struct OnAppearView: View {
     Color.clear.onAppear(perform: block)
   }
 }
+#endif
