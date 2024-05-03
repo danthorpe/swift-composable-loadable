@@ -25,7 +25,7 @@ jobs:
     name: Run tests on ${{ matrix.os }} with Swift version ${{ matrix.swift }}
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-13", "macos-14"]
         swift: ["5.7", "5.8", "5.9", "5.10"]
