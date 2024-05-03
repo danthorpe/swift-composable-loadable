@@ -1,4 +1,3 @@
-#if canImport(SwiftUI)
 import ComposableArchitecture
 import SwiftUI
 
@@ -24,4 +23,3 @@ extension FailureView: View {
     }
   }
 }
-#endif
