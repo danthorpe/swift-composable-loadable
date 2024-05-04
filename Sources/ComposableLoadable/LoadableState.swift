@@ -1,11 +1,13 @@
 import ComposableArchitecture
 import Foundation
 
+@ObservableState
 public struct LoadedValue<Request, Value> {
   package internal(set) var request: Request
   package internal(set) var value: Value
 }
 
+@ObservableState
 public struct LoadedFailure<Request, Failure: Error> {
   package let request: Request
   package let error: Failure

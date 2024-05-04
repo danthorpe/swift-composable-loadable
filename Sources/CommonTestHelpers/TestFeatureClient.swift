@@ -1,7 +1,4 @@
 import ComposableArchitecture
-import Testing
-
-@testable import ComposableLoadable
 
 struct TestFeatureClient: TestDependencyKey {
   static var testValue = TestFeatureClient(

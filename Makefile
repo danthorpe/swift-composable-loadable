@@ -9,7 +9,7 @@ PLATFORM_WATCHOS = watchOS Simulator,id=$(call udid_for,watchOS 10.2,Watch)
 default: test-all
 
 test-all:
-	swift test
+	swift test --enable-code-coverage
 
 docs:
 	mkdir -p $(output)/$(tag)
