@@ -22,7 +22,7 @@ final class LoadableStateTests: XCTest {
     XCTAssertFalse(state.isPending)
     XCTAssertFalse(state.isFailure)
     XCTAssertFalse(state.isSuccess)
-    XCTAssertEqual(state.request == EmptyLoadRequest())
+    XCTAssertEqual(state.request, EmptyLoadRequest())
   }
 
   func test__isLoadedSuccess() {
@@ -31,18 +31,18 @@ final class LoadableStateTests: XCTest {
     XCTAssertFalse(state.isActive)
     XCTAssertFalse(state.isPending)
     XCTAssertFalse(state.isFailure)
-    XCTAssertEqual(state.request == EmptyLoadRequest())
-    XCTAssertEqual(state.wrappedValue == TestState(value: 100))
+    XCTAssertEqual(state.request, EmptyLoadRequest())
+    XCTAssertEqual(state.wrappedValue, TestState(value: 100))
   }
 
   func test__isLoadedFailure() {
     var state = LoadableState<EmptyLoadRequest, TestState>(current: .active, previous: .pending)
-    state.finish(EmptyLoadRequest(), result: .failure(TestEquatableError()))
+    state.finish(EmptyLoadRequest(), result: .failure(EquatableErrorA()))
     XCTAssertTrue(state.isFailure)
     XCTAssertFalse(state.isSuccess)
     XCTAssertFalse(state.isActive)
     XCTAssertFalse(state.isPending)
-    XCTAssertEqual(state.request == EmptyLoadRequest())
+    XCTAssertEqual(state.request, EmptyLoadRequest())
   }
 
   func test__setLoadedValueToNil() {
@@ -78,16 +78,16 @@ final class LoadableStateTests: XCTest {
     XCTAssertNil(state.isPending)
     XCTAssertNil(state.isFailure)
     XCTAssertNil(state.isSuccess)
-    XCTAssertEqual(state.request == EmptyLoadRequest())
+    XCTAssertEqual(state.request, EmptyLoadRequest())
 
     state.wrappedValue = TestState(value: 100)
     XCTAssertTrue(state.isSuccess)
     XCTAssertNil(state.isActive)
     XCTAssertNil(state.isPending)
     XCTAssertNil(state.isFailure)
-    XCTAssertEqual(state.request == EmptyLoadRequest())
-    XCTAssertEqual(state.wrappedValue == TestState(value: 100))
+    XCTAssertEqual(state.request, EmptyLoadRequest())
+    XCTAssertEqual(state.wrappedValue, TestState(value: 100))
 
-    XCTAssertEqual(state.value == 100)
+    XCTAssertEqual(state.value, 100)
   }
 }
