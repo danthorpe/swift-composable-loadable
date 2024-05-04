@@ -45,14 +45,6 @@ jobs:
       - name: Checkout Package
         uses: actions/checkout@v4
 
-      - name: Cache SPM
-        uses: actions/cache@v4
-        with:
-          path: .build
-          key: v2-${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            v2-${{ runner.os }}-spm-
-
       - name: Test
         run: make test-all
 
