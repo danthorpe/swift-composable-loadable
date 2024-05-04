@@ -47,10 +47,3 @@ jobs:
 
       - name: Test
         run: make test-all
-
-      - name: Swift Coverage Report
-        continue-on-error: true
-        uses: maxep/spm-lcov-action@0.3.1
-        with:
-          file-format: lcov
-          output-file: ./coverage.lcov
