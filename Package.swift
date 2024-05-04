@@ -26,7 +26,8 @@ var package = Package(
     .target(
       name: "CommonTestHelpers",
       dependencies: [
-        .composableArchitecture
+        "ComposableLoadable",
+        .composableArchitecture,
       ]
     ),
     .testTarget(
