@@ -1,34 +1,32 @@
 import ComposableArchitecture
-import Testing
+import XCTest
 
 @testable import CommonTestHelpers
 @testable import ComposableLoadable
 
-@Suite("LoadableAction Tests")
-struct LoadableActionTests {
+final class LoadableActionTests: XCTestCase {
 
-  @Test("Equatable Conformance")
-  func equatableConformance() {
+  func test__equatable_conformances() {
     typealias Action = LoadingActionWith<String, CounterFeature>
-    #expect(Action.cancel == Action.cancel)
-    #expect(Action.refresh == Action.refresh)
-    #expect(Action.cancel != Action.refresh)
-    #expect(Action.load("Hello") == Action.load("Hello"))
-    #expect(Action.load("Hello") != Action.load("Goodbye"))
-    #expect(Action.finished("Hello", .success(100)) == Action.finished("Hello", .success(100)))
-    #expect(Action.finished("Hello", .success(100)) != Action.finished("Hello", .success(200)))
-    #expect(Action.finished("Hello", .success(100)) != Action.finished("Goodbye", .success(100)))
-    #expect(
+    XCTAssertEqual(Action.cancel, Action.cancel)
+    XCTAssertEqual(Action.refresh, Action.refresh)
+    XCTAssertNotEqual(Action.cancel, Action.refresh)
+    XCTAssertEqual(Action.load("Hello"), Action.load("Hello"))
+    XCTAssertNotEqual(Action.load("Hello"), Action.load("Goodbye"))
+    XCTAssertEqual(Action.finished("Hello", .success(100)), Action.finished("Hello", .success(100)))
+    XCTAssertNotEqual(Action.finished("Hello", .success(100)), Action.finished("Hello", .success(200)))
+    XCTAssertNotEqual(Action.finished("Hello", .success(100)), Action.finished("Goodbye", .success(100)))
+    XCTAssertEqual(
+      Action.finished("Hello", .failure(EquatableErrorA())),
       Action.finished("Hello", .failure(EquatableErrorA()))
-        == Action.finished("Hello", .failure(EquatableErrorA()))
     )
-    #expect(
-      Action.finished("Hello", .failure(EquatableErrorA()))
-        != Action.finished("Goodbye", .failure(EquatableErrorA()))
+    XCTAssertNotEqual(
+      Action.finished("Hello", .failure(EquatableErrorA())),
+      Action.finished("Goodbye", .failure(EquatableErrorA()))
     )
-    #expect(
-      Action.finished("Hello", .failure(EquatableErrorA()))
-        != Action.finished("Hello", .failure(EquatableErrorB()))
+    XCTAssertNotEqual(
+      Action.finished("Hello", .failure(EquatableErrorA())),
+      Action.finished("Hello", .failure(EquatableErrorB()))
     )
   }
 }

@@ -31,7 +31,7 @@ var package = Package(
       ]
     ),
     .testTarget(
-      name: "ComposableLoadableXCTests",
+      name: "ComposableLoadableTests",
       dependencies: [
         "CommonTestHelpers",
         "ComposableLoadable",
