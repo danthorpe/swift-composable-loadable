@@ -1,24 +1,21 @@
 import ComposableArchitecture
-import Testing
+import XCTest
 
 @testable import CommonTestHelpers
 @testable import ComposableLoadable
 
-@Suite("Reducer Basics")
-@MainActor struct ReducerBasicTests {
+final class ReducerBasicTests: XCTestCase {
 
-  let request = "Hello"
-  fileprivate let store = TestStore(initialState: ParentFeature.State()) {
-    ParentFeature()
-  } withDependencies: {
-    $0.testClient.getValue = { input in
-      #expect(input == "Hello")
-      return 100
+  @MainActor func test__happy_path() async throws {
+    let request = "Hello"
+    let store = TestStore(initialState: ParentFeature.State()) {
+      ParentFeature()
+    } withDependencies: {
+      $0.testClient.getValue = { input in
+        XCTAssertEqual(input, "Hello")
+        return 100
+      }
     }
-  }
-
-  @Test("Happy Path Journey")
-  func happyPath() async throws {
 
     await store.send(.counter(.load(request))) {
       $0.$counter.previous = .pending
@@ -31,7 +28,7 @@ import Testing
     }
 
     store.dependencies.testClient.getValue = { input in
-      #expect(input == request)
+      XCTAssertEqual(input, request)
       return 200
     }
 
@@ -47,7 +44,7 @@ import Testing
 
     let expectedError = TestFeatureClientError()
     store.dependencies.testClient.getValue = { input in
-      #expect(input == request)
+      XCTAssertEqual(input, request)
       throw expectedError
     }
 
@@ -62,8 +59,16 @@ import Testing
     }
   }
 
-  @Test("Child Reducer")
-  func childReducer() async throws {
+  @MainActor func test__child_reducer() async throws {
+    let request = "Hello"
+    let store = TestStore(initialState: ParentFeature.State()) {
+      ParentFeature()
+    } withDependencies: {
+      $0.testClient.getValue = { input in
+        XCTAssertEqual(input, "Hello")
+        return 100
+      }
+    }
 
     await store.send(.counter(.load(request))) {
       $0.$counter.previous = .pending

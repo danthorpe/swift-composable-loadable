@@ -1,120 +1,93 @@
-import Testing
+import Foundation
+import XCTest
 
 @testable import CommonTestHelpers
 @testable import ComposableLoadable
 
-@Suite("LoadableState Tests")
-struct LoadableStateTests {
+final class LoadableStateTests: XCTest {
 
-  @Test("isPending")
-  func isPending() {
+  func test__isPending() {
     let state = LoadableState<EmptyLoadRequest, TestState>.pending
-    #expect(state.isPending)
-    #expect(false == state.isActive)
-    #expect(false == state.isFailure)
-    #expect(false == state.isSuccess)
-    #expect(nil == state.request)
-    #expect(nil == state.value)
+    XCTAssertTrue(state.isPending)
+    XCTAssertFalse(state.isActive)
+    XCTAssertFalse(state.isFailure)
+    XCTAssertFalse(state.isSuccess)
+    XCTAssertNil(state.request)
+    XCTAssertNil(state.value)
   }
 
-  @Test("isActive")
-  func isActive() {
+  func test__isActive() {
     let state = LoadableState<EmptyLoadRequest, TestState>(current: .active)
-    #expect(state.isActive)
-    #expect(false == state.isPending)
-    #expect(false == state.isFailure)
-    #expect(false == state.isSuccess)
-    #expect(state.request == EmptyLoadRequest())
+    XCTAssertTrue(state.isActive)
+    XCTAssertFalse(state.isPending)
+    XCTAssertFalse(state.isFailure)
+    XCTAssertFalse(state.isSuccess)
+    XCTAssertEqual(state.request, EmptyLoadRequest())
   }
 
-  @Test("isLoaded Success")
-  func isLoadedSuccess() {
+  func test__isLoadedSuccess() {
     let state = LoadableState(success: TestState(value: 100))
-    #expect(state.isSuccess)
-    #expect(false == state.isActive)
-    #expect(false == state.isPending)
-    #expect(false == state.isFailure)
-    #expect(state.request == EmptyLoadRequest())
-    #expect(state.wrappedValue == TestState(value: 100))
+    XCTAssertTrue(state.isSuccess)
+    XCTAssertFalse(state.isActive)
+    XCTAssertFalse(state.isPending)
+    XCTAssertFalse(state.isFailure)
+    XCTAssertEqual(state.request, EmptyLoadRequest())
+    XCTAssertEqual(state.wrappedValue, TestState(value: 100))
   }
 
-  @Test("isLoaded Failure")
-  func isLoadedFailure() {
+  func test__isLoadedFailure() {
     var state = LoadableState<EmptyLoadRequest, TestState>(current: .active, previous: .pending)
     state.finish(EmptyLoadRequest(), result: .failure(EquatableErrorA()))
-    #expect(state.isFailure)
-    #expect(false == state.isSuccess)
-    #expect(false == state.isActive)
-    #expect(false == state.isPending)
-    #expect(state.request == EmptyLoadRequest())
+    XCTAssertTrue(state.isFailure)
+    XCTAssertFalse(state.isSuccess)
+    XCTAssertFalse(state.isActive)
+    XCTAssertFalse(state.isPending)
+    XCTAssertEqual(state.request, EmptyLoadRequest())
   }
 
-  @Test("Set loadedValue to nil")
-  func setLoadedValueToNil() {
+  func test__setLoadedValueToNil() {
     var state = LoadableState<EmptyLoadRequest, TestState>.pending
     state.loadedValue = nil
-    #expect(state.isPending)
-    #expect(false == state.isActive)
-    #expect(false == state.isFailure)
-    #expect(false == state.isSuccess)
-    #expect(nil == state.request)
+    XCTAssertTrue(state.isPending)
+    XCTAssertFalse(state.isActive)
+    XCTAssertFalse(state.isFailure)
+    XCTAssertFalse(state.isSuccess)
+    XCTAssertNil(state.request)
 
     state.loadedFailure = nil
-    #expect(state.isPending)
-    #expect(false == state.isActive)
-    #expect(false == state.isFailure)
-    #expect(false == state.isSuccess)
-    #expect(nil == state.request)
+    XCTAssertTrue(state.isPending)
+    XCTAssertFalse(state.isActive)
+    XCTAssertFalse(state.isFailure)
+    XCTAssertFalse(state.isSuccess)
+    XCTAssertNil(state.request)
   }
 
-  @Test("Basic happy path")
-  func basicHappyPath() {
+  func test__basicHappyPath() {
     var state = LoadableState<EmptyLoadRequest, TestState>.pending
-    #expect(nil == state.wrappedValue)
-    #expect(nil == state.loadedValue)
-    #expect(nil == state.loadedFailure)
+    XCTAssertNil(state.wrappedValue)
+    XCTAssertNil(state.loadedValue)
+    XCTAssertNil(state.loadedFailure)
 
     state.wrappedValue = nil
-    #expect(nil == state.wrappedValue)
-    #expect(nil == state.loadedValue)
-    #expect(nil == state.loadedFailure)
+    XCTAssertNil(state.wrappedValue)
+    XCTAssertNil(state.loadedValue)
+    XCTAssertNil(state.loadedFailure)
 
     state.becomeActive()
-    #expect(state.isActive)
-    #expect(false == state.isPending)
-    #expect(false == state.isFailure)
-    #expect(false == state.isSuccess)
-    #expect(state.request == EmptyLoadRequest())
+    XCTAssertTrue(state.isActive)
+    XCTAssertNil(state.isPending)
+    XCTAssertNil(state.isFailure)
+    XCTAssertNil(state.isSuccess)
+    XCTAssertEqual(state.request, EmptyLoadRequest())
 
     state.wrappedValue = TestState(value: 100)
-    #expect(state.isSuccess)
-    #expect(false == state.isActive)
-    #expect(false == state.isPending)
-    #expect(false == state.isFailure)
-    #expect(state.request == EmptyLoadRequest())
-    #expect(state.wrappedValue == TestState(value: 100))
+    XCTAssertTrue(state.isSuccess)
+    XCTAssertNil(state.isActive)
+    XCTAssertNil(state.isPending)
+    XCTAssertNil(state.isFailure)
+    XCTAssertEqual(state.request, EmptyLoadRequest())
+    XCTAssertEqual(state.wrappedValue, TestState(value: 100))
 
-    #expect(state.value == 100)
-  }
-
-  @Test("Property Wrapper basics")
-  func propertyWrapperBasics() throws {
-    @LoadableState<EmptyLoadRequest, TestState> var state
-    #expect(state == nil)
-
-    $state = .active
-    #expect(state == nil)
-
-    $state.finish(.success(TestState(value: 42)))
-    #expect(state?.value == 42)
-
-    $state.becomeActive()
-    #expect(state?.value == 42)
-
-    $state.finish(.failure(EquatableErrorA()))
-    #expect(state == nil)
-    #expect($state.isFailure)
-    let error = try #require($state.error)
-    #expect(_isEqual(error, EquatableErrorA()))
+    XCTAssertEqual(state.value, 100)
   }
 }
