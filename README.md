@@ -1,6 +1,6 @@
 # swift-composable-loadable
 
-[![Tests](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/tests.yml)
+[![CI/CD](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml/badge.svg)](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml)
 
 A Swift Composable Architecture component for loadable features.
 
