@@ -1,6 +1,6 @@
 # swift-composable-loadable
 
-[![CI/CD](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml/badge.svg)](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml)
+[![CI/CD](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml/badge.svg)](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml) [![codecov](https://codecov.io/github/danthorpe/swift-composable-loadable/graph/badge.svg?token=4RI5GTSZ4F)](https://codecov.io/github/danthorpe/swift-composable-loadable)
 
 A Swift Composable Architecture component for loadable features.
 
