@@ -72,3 +72,7 @@ extension LoadingAction where Value: Equatable {
     }
   }
 }
+
+public struct NoLoadingAction: Equatable {
+  private init() {}
+}

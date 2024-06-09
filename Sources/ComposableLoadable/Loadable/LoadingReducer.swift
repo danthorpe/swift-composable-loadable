@@ -44,6 +44,25 @@ extension Reducer {
       child: child
     )
   }
+
+  /// Integrate some LoadableState which does not require a child domain
+  public func loadable<ChildState, Request>(
+    _ toLoadableState: WritableKeyPath<State, LoadableState<Request, ChildState>>,
+    action toLoadingAction: CaseKeyPath<Action, LoadingAction<Request, ChildState, NoLoadingAction>>,
+    load: @escaping @Sendable (Request, State) async throws -> ChildState,
+    fileID: StaticString = #fileID,
+    line: UInt = #line
+  ) -> some ReducerOf<Self> {
+    LoadingReducer(
+      parent: self,
+      child: EmptyReducer(),
+      toLoadableState: toLoadableState,
+      toLoadingAction: toLoadingAction,
+      client: LoadingClient(load: load),
+      fileID: fileID,
+      line: line
+    )
+  }
 }
 
 // MARK: - Internal API

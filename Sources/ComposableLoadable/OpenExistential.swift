@@ -1,6 +1,6 @@
 // Adapted from swift-composable-architecute
 
-// MARK: Equatable
+// MARK: - Equatable
 
 func _isEqual(_ lhs: Any, _ rhs: Any) -> Bool {
   (lhs as? any Equatable)?.isEqual(other: rhs) ?? false
@@ -12,7 +12,7 @@ extension Equatable {
   }
 }
 
-// MARK: Identifiable
+// MARK: - Identifiable
 
 func _identifiableID(_ value: Any) -> AnyHashable? {
   func open(_ value: some Identifiable) -> AnyHashable {
