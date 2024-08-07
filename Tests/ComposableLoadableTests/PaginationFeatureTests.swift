@@ -90,7 +90,7 @@ final class PaginationFeatureTests: XCTestCase {
       $0.$page.becomeActive(request)
     }
 
-    await store.receive(.page(.finished(request, .success(page2)))) {
+    await store.receive(.page(.finished(request, didRefresh: false, .success(page2)))) {
       $0.$page.finish(request, result: .success(page2))
       $0.pages = [
         page1, page2,
@@ -116,7 +116,7 @@ final class PaginationFeatureTests: XCTestCase {
       $0.$page.becomeActive(request)
     }
 
-    await store.receive(.page(.finished(request, .success(page3)))) {
+    await store.receive(.page(.finished(request, didRefresh: false, .success(page3)))) {
       $0.$page.finish(request, result: .success(page3))
       $0.pages = [
         page1, page2, page3,

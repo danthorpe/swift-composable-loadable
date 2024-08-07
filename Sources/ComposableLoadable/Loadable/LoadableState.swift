@@ -107,10 +107,10 @@ public struct LoadableState<Request, Value> {
   }
 
   public var isRefreshing: Bool {
-    guard let currentRequest = current.request, let previousRequest = previous?.request else {
+    guard case let .active(currentActiveRequest) = current, let previousRequest = previous?.request else {
       return false
     }
-    return _isEqual(currentRequest, previousRequest)
+    return _isEqual(currentActiveRequest, previousRequest)
   }
 
   public var isSuccess: Bool {

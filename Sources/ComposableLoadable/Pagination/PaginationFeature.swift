@@ -192,7 +192,7 @@ import Foundation
         }
         let request = PageRequest(direction: direction, context: state.context, cursor: cursor)
         return .send(.page(.load(request)))
-      case let .page(.finished(.some(request), .success(page))):
+      case let .page(.finished(.some(request), _, .success(page))):
         state.finished(request, page: page)
         let continueSelection: EffectOf<Self> =
           request.direction.isHorizontalPaging
