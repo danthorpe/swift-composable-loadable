@@ -160,14 +160,14 @@ private struct LoadingReducer<
       Scope(state: toLoadableState, action: toLoadingAction) {
         Reduce { loadableState, loadingAction in
 
-          func send(_ request: Request) -> Effect<ThisLoadingAction> {
+          func send(refresh: Bool, _ request: Request) -> Effect<ThisLoadingAction> {
             loadableState.becomeActive(request)
             return
               .run { send in
                 let value = try await client.load(request, parentState)
-                await send(.finished(request, .success(value)))
+                await send(.finished(request, didRefresh: refresh, .success(value)))
               } catch: { error, send in
-                await send(.finished(request, .failure(error)))
+                await send(.finished(request, didRefresh: refresh, .failure(error)))
               }
               .cancellable(id: CancelID(), cancelInFlight: true)
           }
@@ -176,14 +176,14 @@ private struct LoadingReducer<
           case .cancel:
             loadableState.cancel()
             return .cancel(id: CancelID())
-          case let .finished(request, taskResult):
+          case let .finished(request, _, taskResult):
             loadableState.finish(request, result: Result(taskResult))
             return .none
           case let .load(request):
-            return send(request)
+            return send(refresh: false, request)
           case .refresh:
             guard let request = loadableState.request else { return .none }
-            return send(request)
+            return send(refresh: true, request)
           case .loaded:
             return .none
           }

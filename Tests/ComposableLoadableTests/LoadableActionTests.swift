@@ -13,20 +13,41 @@ final class LoadableActionTests: XCTestCase {
     XCTAssertNotEqual(Action.cancel, Action.refresh)
     XCTAssertEqual(Action.load("Hello"), Action.load("Hello"))
     XCTAssertNotEqual(Action.load("Hello"), Action.load("Goodbye"))
-    XCTAssertEqual(Action.finished("Hello", .success(100)), Action.finished("Hello", .success(100)))
-    XCTAssertNotEqual(Action.finished("Hello", .success(100)), Action.finished("Hello", .success(200)))
-    XCTAssertNotEqual(Action.finished("Hello", .success(100)), Action.finished("Goodbye", .success(100)))
     XCTAssertEqual(
-      Action.finished("Hello", .failure(EquatableErrorA())),
-      Action.finished("Hello", .failure(EquatableErrorA()))
+      Action.finished("Hello", didRefresh: false, .success(100)),
+      Action.finished("Hello", didRefresh: false, .success(100))
+    )
+    XCTAssertEqual(
+      Action.finished("Hello", didRefresh: true, .success(100)),
+      Action.finished("Hello", didRefresh: true, .success(100))
     )
     XCTAssertNotEqual(
-      Action.finished("Hello", .failure(EquatableErrorA())),
-      Action.finished("Goodbye", .failure(EquatableErrorA()))
+      Action.finished("Hello", didRefresh: false, .success(100)),
+      Action.finished("Hello", didRefresh: false, .success(200))
     )
     XCTAssertNotEqual(
-      Action.finished("Hello", .failure(EquatableErrorA())),
-      Action.finished("Hello", .failure(EquatableErrorB()))
+      Action.finished("Hello", didRefresh: false, .success(100)),
+      Action.finished("Goodbye", didRefresh: false, .success(100))
+    )
+    XCTAssertNotEqual(
+      Action.finished("Hello", didRefresh: true, .success(100)),
+      Action.finished("Hello", didRefresh: false, .success(100))
+    )
+    XCTAssertEqual(
+      Action.finished("Hello", didRefresh: false, .failure(EquatableErrorA())),
+      Action.finished("Hello", didRefresh: false, .failure(EquatableErrorA()))
+    )
+    XCTAssertNotEqual(
+      Action.finished("Hello", didRefresh: false, .failure(EquatableErrorA())),
+      Action.finished("Goodbye", didRefresh: false, .failure(EquatableErrorA()))
+    )
+    XCTAssertNotEqual(
+      Action.finished("Hello", didRefresh: false, .failure(EquatableErrorA())),
+      Action.finished("Hello", didRefresh: true, .failure(EquatableErrorA()))
+    )
+    XCTAssertNotEqual(
+      Action.finished("Hello", didRefresh: false, .failure(EquatableErrorA())),
+      Action.finished("Hello", didRefresh: false, .failure(EquatableErrorB()))
     )
   }
 }

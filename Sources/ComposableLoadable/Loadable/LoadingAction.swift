@@ -4,7 +4,7 @@ import Foundation
 @CasePathable
 public enum LoadingAction<Request, Value, Action> {
   case cancel
-  case finished(Request, TaskResult<Value>)
+  case finished(Request, didRefresh: Bool, TaskResult<Value>)
   case load(Request)
   case loaded(Action)
   case refresh
@@ -15,8 +15,8 @@ extension LoadingAction where Request == EmptyLoadRequest {
     .load(EmptyLoadRequest())
   }
 
-  public static func finished(_ value: TaskResult<Value>) -> Self {
-    .finished(EmptyLoadRequest(), value)
+  public static func finished(didRefresh: Bool = false, _ value: TaskResult<Value>) -> Self {
+    .finished(EmptyLoadRequest(), didRefresh: didRefresh, value)
   }
 }
 
@@ -29,8 +29,8 @@ extension LoadingAction where Request: Equatable, Value: Equatable, Action: Equa
     switch (lhs, rhs) {
     case (.cancel, .cancel), (.refresh, .refresh):
       return true
-    case let (.finished(lhsR, lhsTR), .finished(rhsR, rhsTR)):
-      return lhsR == rhsR && lhsTR == rhsTR
+    case let (.finished(lhsR, lhsDR, lhsTR), .finished(rhsR, rhsDR, rhsTR)):
+      return lhsR == rhsR && lhsDR == rhsDR && lhsTR == rhsTR
     case let (.load(lhs), .load(rhs)):
       return lhs == rhs
     case let (.loaded(lhs), .loaded(rhs)):
@@ -46,8 +46,8 @@ extension LoadingAction where Request: Equatable, Value: Equatable, Action == Ne
     switch (lhs, rhs) {
     case (.cancel, .cancel), (.refresh, .refresh), (.loaded, .loaded):
       return true
-    case let (.finished(lhsR, lhsTR), .finished(rhsR, rhsTR)):
-      return lhsR == rhsR && lhsTR == rhsTR
+    case let (.finished(lhsR, lhsDR, lhsTR), .finished(rhsR, rhsDR, rhsTR)):
+      return lhsR == rhsR && lhsDR == rhsDR && lhsTR == rhsTR
     case let (.load(lhs), .load(rhs)):
       return lhs == rhs
     default:
@@ -61,8 +61,8 @@ extension LoadingAction where Value: Equatable {
     switch (lhs, rhs) {
     case (.cancel, .cancel), (.refresh, .refresh):
       return true
-    case let (.finished(lhsR, lhsTR), .finished(rhsR, rhsTR)):
-      return _isEqual(lhsR, rhsR) && lhsTR == rhsTR
+    case let (.finished(lhsR, lhsDR, lhsTR), .finished(rhsR, rhsDR, rhsTR)):
+      return _isEqual(lhsR, rhsR) && lhsDR == rhsDR && lhsTR == rhsTR
     case let (.load(lhs), .load(rhs)):
       return _isEqual(lhs, rhs)
     case let (.loaded(lhs), .loaded(rhs)):
