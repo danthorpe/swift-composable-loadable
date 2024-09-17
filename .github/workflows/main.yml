@@ -15,7 +15,7 @@ concurrency:
 jobs:
   swift-package-test:
     name: Test Swift Package
-    uses: danthorpe/ci/.github/workflows/swift-package.yml@main
+    uses: danthorpe/ci/.github/workflows/swift-package.yml@swift-6
     secrets: inherit
     with:
       matrix: >
