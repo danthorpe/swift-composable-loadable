@@ -179,7 +179,6 @@ import Foundation
 
   public typealias Page = State.Page
   public typealias PageRequest = State.PageRequest
-
   public typealias LoadPage = @Sendable (PageRequest) async throws -> Page
 
   public var body: some ReducerOf<Self> {

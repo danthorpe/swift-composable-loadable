@@ -239,11 +239,11 @@ extension LoadableState where Request == EmptyLoadRequest {
     self.init(request: EmptyLoadRequest(), failure: error)
   }
 
-  mutating func becomeActive() {
+  mutating public func becomeActive() {
     becomeActive(EmptyLoadRequest())
   }
 
-  mutating func finish(
+  mutating public func finish(
     _ result: Result<Value, Error>
   ) {
     finish(EmptyLoadRequest(), result: result)
