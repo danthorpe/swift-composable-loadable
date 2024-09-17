@@ -48,3 +48,9 @@ extension PaginationFeature.Action: Equatable where Element: Equatable {
     }
   }
 }
+
+extension PaginationFeature: Equatable where Element: Equatable {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    true  // There is only behaviour in the reducer itself.
+  }
+}

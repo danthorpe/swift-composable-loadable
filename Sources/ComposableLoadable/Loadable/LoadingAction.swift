@@ -22,7 +22,9 @@ extension LoadingAction where Request == EmptyLoadRequest {
 
 // MARK: - Conformances
 
-extension LoadingAction: Equatable where Value: Equatable {}
+extension LoadingAction: Equatable where Value: Equatable {
+  // NOTE: Define conformance here, but implementation is below
+}
 
 extension LoadingAction where Request: Equatable, Value: Equatable, Action: Equatable {
   public static func == (lhs: Self, rhs: Self) -> Bool {
