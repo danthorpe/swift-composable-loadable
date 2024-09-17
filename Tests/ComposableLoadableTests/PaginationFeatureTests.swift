@@ -8,7 +8,7 @@ private struct Message: Equatable, Identifiable {
   let message: String
 }
 
-extension String: Error {}
+extension String: @retroactive Error {}
 
 final class PaginationFeatureTests: XCTestCase {
 
