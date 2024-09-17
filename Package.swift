@@ -20,14 +20,18 @@ var package = Package(
     .target(
       name: "ComposableLoadable",
       dependencies: [
-        .composableArchitecture
+        .product(
+          name: "ComposableArchitecture", package: "swift-composable-architecture"
+        )
       ]
     ),
     .target(
       name: "CommonTestHelpers",
       dependencies: [
         "ComposableLoadable",
-        .composableArchitecture,
+        .product(
+          name: "ComposableArchitecture", package: "swift-composable-architecture"
+        ),
       ]
     ),
     .testTarget(
@@ -39,9 +43,3 @@ var package = Package(
     ),
   ]
 )
-
-extension Target.Dependency {
-  static let composableArchitecture: Target.Dependency = .product(
-    name: "ComposableArchitecture", package: "swift-composable-architecture"
-  )
-}
