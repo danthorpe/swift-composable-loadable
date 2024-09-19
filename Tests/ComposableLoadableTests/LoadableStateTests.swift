@@ -4,7 +4,7 @@ import XCTest
 @testable import CommonTestHelpers
 @testable import ComposableLoadable
 
-final class LoadableStateTests: XCTest {
+final class LoadableStateTests: XCTestCase {
 
   func test__isPending() {
     let state = LoadableState<EmptyLoadRequest, TestState>.pending
@@ -75,16 +75,16 @@ final class LoadableStateTests: XCTest {
 
     state.becomeActive()
     XCTAssertTrue(state.isActive)
-    XCTAssertNil(state.isPending)
-    XCTAssertNil(state.isFailure)
-    XCTAssertNil(state.isSuccess)
+    XCTAssertFalse(state.isPending)
+    XCTAssertFalse(state.isFailure)
+    XCTAssertFalse(state.isSuccess)
     XCTAssertEqual(state.request, EmptyLoadRequest())
 
     state.wrappedValue = TestState(value: 100)
     XCTAssertTrue(state.isSuccess)
-    XCTAssertNil(state.isActive)
-    XCTAssertNil(state.isPending)
-    XCTAssertNil(state.isFailure)
+    XCTAssertFalse(state.isActive)
+    XCTAssertFalse(state.isPending)
+    XCTAssertFalse(state.isFailure)
     XCTAssertEqual(state.request, EmptyLoadRequest())
     XCTAssertEqual(state.wrappedValue, TestState(value: 100))
 

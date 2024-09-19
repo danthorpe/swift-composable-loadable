@@ -8,7 +8,7 @@ import Foundation
 /// has already be fetched. i.e. you fetch some elements, and have
 /// pagination cursors for previous & next. You can use
 /// `LoadableState` etc to do this.
-@Reducer public struct PaginationFeature<Element: Identifiable> {
+@Reducer public struct PaginationFeature<Element: Identifiable & Sendable>: Sendable {
 
   @ObservableState
   public struct State {
@@ -71,7 +71,7 @@ import Foundation
     }
 
     /// A "page" of elements
-    public struct Page {
+    public struct Page: Sendable {
       var previous: PaginationCursor?
       var next: PaginationCursor?
       var elements: [Element]
@@ -89,7 +89,7 @@ import Foundation
     }
 
     /// A request for a new page
-    public struct PageRequest {
+    public struct PageRequest: Sendable {
 
       /// The `PaginationDirection` direction
       public var direction: PaginationDirection

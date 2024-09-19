@@ -21,21 +21,24 @@ var package = Package(
       name: "ComposableLoadable",
       dependencies: [
         .composableArchitecture
-      ]
+      ],
+      swiftSettings: .concurrency
     ),
     .target(
       name: "CommonTestHelpers",
       dependencies: [
         "ComposableLoadable",
         .composableArchitecture,
-      ]
+      ],
+      swiftSettings: .concurrency
     ),
     .testTarget(
       name: "ComposableLoadableTests",
       dependencies: [
         "CommonTestHelpers",
         "ComposableLoadable",
-      ]
+      ],
+      swiftSettings: .concurrency
     ),
   ]
 )
@@ -44,4 +47,18 @@ extension Target.Dependency {
   static let composableArchitecture: Target.Dependency = .product(
     name: "ComposableArchitecture", package: "swift-composable-architecture"
   )
+}
+
+extension [SwiftSetting] {
+  #if compiler(>=6)
+  static let concurrency: Self = [
+    .enableUpcomingFeature("StrictConcurrency")
+      .enableUpcomingFeature("InferSendableFromCaptures")
+  ]
+  #else
+  static let concurrency: Self = [
+    .enableExperimentalFeature("StrictConcurrency"),
+    .enableExperimentalFeature("InferSendableFromCaptures"),
+  ]
+  #endif
 }

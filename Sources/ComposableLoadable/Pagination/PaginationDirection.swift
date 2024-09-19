@@ -6,7 +6,7 @@ import Foundation
 /// when revealing elements at the bottom of a list.
 /// And .leading/.trailing is for when paging through
 /// a selected element sideways.
-public enum PaginationDirection: Equatable {
+public enum PaginationDirection: Equatable, Sendable {
   case top, bottom, leading, trailing
 }
 

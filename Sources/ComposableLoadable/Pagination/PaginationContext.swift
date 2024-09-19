@@ -14,7 +14,7 @@ import Foundation
 ///   let searchId: String
 /// }
 /// ```
-public protocol PaginationContext: Equatable {
+public protocol PaginationContext: Equatable, Sendable {
 
   /// A convenience to determine equality between any two
   /// contexts.
