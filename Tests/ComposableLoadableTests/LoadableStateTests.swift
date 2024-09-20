@@ -90,4 +90,20 @@ final class LoadableStateTests: XCTestCase {
 
     XCTAssertEqual(state.value, 100)
   }
+
+  func test__cancel() {
+    var state = LoadableState<EmptyLoadRequest, TestState>.pending
+    state.cancel()
+    XCTAssertTrue(state.isPending)
+    state.becomeActive()
+    XCTAssertEqual(state.previous, .pending)
+    XCTAssertTrue(state.isActive)
+    state.cancel()
+    XCTAssertTrue(state.isPending)
+
+    state = LoadableState<EmptyLoadRequest, TestState>.active
+    state.cancel()
+    XCTAssertTrue(state.isPending)
+
+  }
 }
