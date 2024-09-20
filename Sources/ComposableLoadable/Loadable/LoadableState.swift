@@ -199,15 +199,15 @@ public struct LoadableState<Request, Value> {
     }
   }
 
-  mutating func becomeActive(_ request: Request) {
+  mutating public func becomeActive(_ request: Request) {
     current = .active(request)
   }
 
-  mutating func cancel() {
+  mutating public func cancel() {
     current = previous ?? .pending
   }
 
-  mutating func finish(
+  mutating public func finish(
     _ request: Request,
     result: Result<Value, Error>
   ) {
