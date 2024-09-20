@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Trigger loading a new page when the view appears
 public struct PaginationLoadMore<
-  Element: Identifiable,
+  Element: Identifiable & Sendable,
   Failure: View,
   Loading: View,
   NoMoreResults: View

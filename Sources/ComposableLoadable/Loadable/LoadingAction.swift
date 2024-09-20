@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 @CasePathable
-public enum LoadingAction<Request, Value, Action> {
+public enum LoadingAction<Request: Sendable, Value: Sendable, Action> {
   case cancel
   case finished(Request, didRefresh: Bool, TaskResult<Value>)
   case load(Request)
@@ -21,6 +21,8 @@ extension LoadingAction where Request == EmptyLoadRequest {
 }
 
 // MARK: - Conformances
+
+extension LoadingAction: Sendable where Request: Sendable, Value: Sendable, Action: Sendable {}
 
 extension LoadingAction: Equatable where Value: Equatable {
   // NOTE: Define conformance here, but implementation is below

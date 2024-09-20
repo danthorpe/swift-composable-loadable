@@ -6,7 +6,12 @@ import Foundation
 extension Reducer {
 
   /// Integrate a Loadable child domain with a generic Request type
-  public func loadable<ChildState, ChildAction, Child: Reducer, Request>(
+  public func loadable<
+    ChildState: Sendable,
+    ChildAction,
+    Child: Reducer,
+    Request: Sendable
+  >(
     _ toLoadableState: WritableKeyPath<State, LoadableState<Request, ChildState>>,
     action toLoadingAction: CaseKeyPath<Action, LoadingAction<Request, ChildState, ChildAction>>,
     @ReducerBuilder<ChildState, ChildAction> child: () -> Child,
@@ -25,7 +30,11 @@ extension Reducer {
   }
 
   /// Integrate a Loadable child domain which does not require a Request type
-  public func loadable<ChildState, ChildAction, Child: Reducer>(
+  public func loadable<
+    ChildState: Sendable,
+    ChildAction,
+    Child: Reducer
+  >(
     _ toLoadableState: WritableKeyPath<State, LoadableState<EmptyLoadRequest, ChildState>>,
     action toLoadingAction: CaseKeyPath<
       Action, LoadingAction<EmptyLoadRequest, ChildState, ChildAction>
@@ -46,7 +55,10 @@ extension Reducer {
   }
 
   /// Integrate some LoadableState which does not require a child domain
-  public func loadable<ChildState, Request>(
+  public func loadable<
+    ChildState: Sendable,
+    Request: Sendable
+  >(
     _ toLoadableState: WritableKeyPath<State, LoadableState<Request, ChildState>>,
     action toLoadingAction: CaseKeyPath<Action, LoadingAction<Request, ChildState, NoLoadingAction>>,
     load: @escaping @Sendable (Request, State) async throws -> ChildState,
@@ -71,7 +83,7 @@ extension Reducer {
 
   fileprivate func loadable<
     Child: Reducer,
-    Request,
+    Request: Sendable,
     Client: LoadableClient<Request, State, Child.State>
   >(
     fileID: StaticString,
@@ -80,7 +92,7 @@ extension Reducer {
     action toLoadingAction: CaseKeyPath<Action, LoadingAction<Request, Child.State, Child.Action>>,
     client: Client,
     @ReducerBuilder<Child.State, Child.Action> child: () -> Child
-  ) -> LoadingReducer<Self, Child, Request, Client> {
+  ) -> LoadingReducer<Self, Child, Request, Client> where Client.State: Sendable {
     LoadingReducer(
       parent: self,
       child: child(),
@@ -98,9 +110,9 @@ extension Reducer {
 private struct LoadingReducer<
   Parent: Reducer,
   Child: Reducer,
-  Request,
+  Request: Sendable,
   Client: LoadableClient<Request, Parent.State, Child.State>
->: Reducer {
+>: Reducer where Child.State: Sendable {
 
   typealias State = Parent.State
   typealias Action = Parent.Action
@@ -155,7 +167,7 @@ private struct LoadingReducer<
   struct CancelID: Hashable {}
 
   func reduce(into state: inout State, action: Action) -> Effect<Action> {
-    let parentState = state
+    let parentState = UncheckedSendable(state)
     return CombineReducers {
       Scope(state: toLoadableState, action: toLoadingAction) {
         Reduce { loadableState, loadingAction in
@@ -163,8 +175,8 @@ private struct LoadingReducer<
           func send(refresh: Bool, _ request: Request) -> Effect<ThisLoadingAction> {
             loadableState.becomeActive(request)
             return
-              .run { send in
-                let value = try await client.load(request, parentState)
+              .run { [load = client.load] send in
+                let value = try await load(request, parentState.value)
                 await send(.finished(request, didRefresh: refresh, .success(value)))
               } catch: { error, send in
                 await send(.finished(request, didRefresh: refresh, .failure(error)))

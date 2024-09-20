@@ -10,7 +10,7 @@ package protocol LoadableClient<Request, State, Value> {
   var load: @Sendable (Request, State) async throws -> Value { get }
 }
 
-public struct EmptyLoadRequest: Equatable {
+public struct EmptyLoadRequest: Equatable, Sendable {
   public init() {}
 }
 

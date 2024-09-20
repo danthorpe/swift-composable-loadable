@@ -1,7 +1,7 @@
 import ComposableArchitecture
 
 struct TestFeatureClient: TestDependencyKey {
-  static var testValue = TestFeatureClient(
+  static let testValue = TestFeatureClient(
     getValue: unimplemented("TestFeatureClient.getValue")
   )
   var getValue: @Sendable (String) async throws -> Int

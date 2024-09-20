@@ -2,8 +2,8 @@ import ComposableArchitecture
 import SwiftUI
 
 public struct LoadableView<
-  Request,
-  State,
+  Request: Sendable,
+  State: Sendable,
   Action,
   Success: View,
   Failure: View,
@@ -41,7 +41,7 @@ public struct LoadableView<
     @ViewBuilder feature: @escaping (Store<State, Action>) -> SuccessView,
     @ViewBuilder onError: @escaping (any Error, Request) -> ErrorView,
     @ViewBuilder onActive: @escaping (Request) -> Loading,
-    onAppear: @escaping () -> Void = {}
+    onAppear: @escaping @MainActor () -> Void = {}
   )
   where
     Pending == OnAppearView,
@@ -73,7 +73,7 @@ public struct LoadableView<
     Failure == FailureView<Request, State, Action, ErrorView>,
     Success == WithPerceptionTracking<SuccessView>
   {
-    self.init(store, feature: feature, onError: onError, onActive: onActive) {
+    self.init(store, feature: feature, onError: onError, onActive: onActive) { @MainActor in
       store.send(.load)
     }
   }
