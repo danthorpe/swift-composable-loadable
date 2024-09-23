@@ -3,7 +3,7 @@ import Foundation
 
 // MARK: - Public API
 
-extension Reducer {
+extension Reducer where State: Sendable {
 
   /// Integrate a Loadable child domain with a generic Request type
   public func loadable<
@@ -18,7 +18,7 @@ extension Reducer {
     load: @escaping @Sendable (Request, State) async throws -> ChildState,
     fileID: StaticString = #fileID,
     line: UInt = #line
-  ) -> some ReducerOf<Self> where ChildState == Child.State, ChildAction == Child.Action {
+  ) -> some ReducerOf<Self> where Child.State: Sendable, ChildState == Child.State, ChildAction == Child.Action {
     loadable(
       fileID: fileID,
       line: line,
@@ -43,7 +43,7 @@ extension Reducer {
     load: @escaping @Sendable (State) async throws -> ChildState,
     fileID: StaticString = #fileID,
     line: UInt = #line
-  ) -> some ReducerOf<Self> where ChildState == Child.State, ChildAction == Child.Action {
+  ) -> some ReducerOf<Self> where Child.State: Sendable, ChildState == Child.State, ChildAction == Child.Action {
     loadable(
       fileID: fileID,
       line: line,
@@ -79,7 +79,7 @@ extension Reducer {
 
 // MARK: - Internal API
 
-extension Reducer {
+extension Reducer where State: Sendable {
 
   fileprivate func loadable<
     Child: Reducer,

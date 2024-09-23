@@ -292,3 +292,11 @@ extension LoadableState: Equatable where Value: Equatable {
     lhs.current == rhs.current && lhs.previous == rhs.previous
   }
 }
+
+extension LoadedValue: Sendable where Request: Sendable, Value: Sendable {}
+
+extension LoadedFailure: Sendable where Request: Sendable, Failure: Sendable {}
+
+extension LoadableState.State: Sendable where Request: Sendable, Value: Sendable {}
+
+extension LoadableState: Sendable where Request: Sendable, Value: Sendable {}

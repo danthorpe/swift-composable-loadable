@@ -1,5 +1,5 @@
 // swift-tools-version: 6.0
-import PackageDescription
+@preconcurrency import PackageDescription
 
 var package = Package(
   name: "swift-composable-loadable",
@@ -43,3 +43,16 @@ var package = Package(
     ),
   ]
 )
+
+extension Target.Dependency {
+  static let composableArchitecture: Target.Dependency = .product(
+    name: "ComposableArchitecture", package: "swift-composable-architecture"
+  )
+}
+
+extension [SwiftSetting] {
+  static let concurrency: Self = [
+    .enableUpcomingFeature("StrictConcurrency"),
+    .enableUpcomingFeature("InferSendableFromCaptures"),
+  ]
+}
