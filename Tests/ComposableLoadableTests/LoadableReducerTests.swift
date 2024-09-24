@@ -85,9 +85,8 @@ final class ReducerBasicTests: XCTestCase {
       }
     }
 
-    await store.send(.counter(.load(request))) {
-      $0.$counter.previous = .pending
-      $0.$counter.current = .active(request)
+    await store.send(\.counter.load, request) {
+      $0.$counter.becomeActive(request)
     }
 
     await store.receive(.counter(.finished(request, didRefresh: false, .success(100)))) {
@@ -112,5 +111,51 @@ final class ReducerBasicTests: XCTestCase {
     await store.send(.counter(.loaded(.decrementButtonTapped))) {
       $0.$counter.wrappedValue?.count = 99
     }
+  }
+
+  @MainActor func test__empty_request() async throws {
+    let randomInt = Int.random(in: 0 ... Int.max)
+    let store = TestStore(initialState: RandomFeature.State()) {
+      RandomFeature()
+    } withDependencies: {
+      $0.testClient.getRandomValue = {
+        randomInt
+      }
+    }
+
+    await store.send(.counter(.load)) {
+      $0.$counter.becomeActive()
+    }
+    let result = await TaskResult {
+      CounterFeature.State(count: randomInt)
+    }
+    await store.receive(
+      .counter(.finished(EmptyLoadRequest(), didRefresh: false, result))
+    ) {
+      $0.$counter.finish(Result(result))
+    }
+  }
+
+  @MainActor func test__no_child_domain() async throws {
+    let request = "Hello"
+    let store = TestStore(initialState: ChildlessFeature.State()) {
+      ChildlessFeature()
+    } withDependencies: {
+      $0.testClient.getValue = { input in
+        XCTAssertEqual(input, "Hello")
+        return 100
+      }
+    }
+
+    await store.send(\.counterValue.load, request) {
+      $0.$counterValue.becomeActive(request)
+    }
+    let result = await TaskResult { 100 }
+    await store.receive(
+      .counterValue(.finished(request, didRefresh: false, result))
+    ) {
+      $0.$counterValue.finish(request, result: Result(result))
+    }
+
   }
 }

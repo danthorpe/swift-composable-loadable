@@ -23,3 +23,47 @@ struct ParentFeature {
     }
   }
 }
+
+@Reducer
+struct RandomFeature {
+  @ObservableState
+  struct State: Equatable {
+    @ObservationStateIgnored
+    @LoadableState<EmptyLoadRequest, CounterFeature.State> package var counter
+  }
+  enum Action: Equatable {
+    case counter(LoadingActionWith<EmptyLoadRequest, CounterFeature>)
+  }
+  @Dependency(\.testClient.getRandomValue) var getRandomValue
+  var body: some ReducerOf<Self> {
+    Reduce { _, _ in
+      return .none
+    }
+    .loadable(\.$counter, action: \.counter) {
+      CounterFeature()
+    } load: { _ in
+      CounterFeature.State(count: try await getRandomValue())
+    }
+  }
+}
+
+@Reducer
+struct ChildlessFeature {
+  @ObservableState
+  struct State: Equatable {
+    @ObservationStateIgnored
+    @LoadableState<String, Int> package var counterValue
+  }
+  enum Action: Equatable {
+    case counterValue(LoadingAction<String, Int, NoLoadingAction>)
+  }
+  @Dependency(\.testClient.getValue) var getValue
+  var body: some ReducerOf<Self> {
+    Reduce { _, _ in
+      return .none
+    }
+    .loadable(\.$counterValue, action: \.counterValue) { request, _ in
+      try await getValue(request)
+    }
+  }
+}

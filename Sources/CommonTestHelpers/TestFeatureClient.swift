@@ -1,10 +1,14 @@
-import ComposableArchitecture
+import Dependencies
+import DependenciesMacros
 
-struct TestFeatureClient: TestDependencyKey {
-  static let testValue = TestFeatureClient(
-    getValue: unimplemented("TestFeatureClient.getValue")
-  )
+@DependencyClient
+struct TestFeatureClient {
   var getValue: @Sendable (String) async throws -> Int
+  var getRandomValue: @Sendable () async throws -> Int
+}
+
+extension TestFeatureClient: TestDependencyKey {
+  static let testValue = TestFeatureClient()
 }
 
 extension DependencyValues {
