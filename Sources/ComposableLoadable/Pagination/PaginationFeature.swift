@@ -8,10 +8,10 @@ import Foundation
 /// has already be fetched. i.e. you fetch some elements, and have
 /// pagination cursors for previous & next. You can use
 /// `LoadableState` etc to do this.
-@Reducer public struct PaginationFeature<Element: Identifiable & Sendable>: Sendable {
+@Reducer public struct PaginationFeature<Element: Identifiable & Sendable>: Sendable where Element.ID: Sendable {
 
   @ObservableState
-  public struct State {
+  public struct State: Sendable {
     /// Access the `PaginationContext`
     public internal(set) var context: any PaginationContext
 

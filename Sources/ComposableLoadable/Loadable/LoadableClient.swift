@@ -3,7 +3,7 @@ import Foundation
 
 // MARK: - Loadable Client
 
-package protocol LoadableClient<Request, State, Value> {
+package protocol LoadableClient<Request, State, Value>: Sendable {
   associatedtype Value
   associatedtype State
   associatedtype Request

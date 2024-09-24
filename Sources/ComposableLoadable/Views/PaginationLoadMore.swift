@@ -7,7 +7,7 @@ public struct PaginationLoadMore<
   Failure: View,
   Loading: View,
   NoMoreResults: View
->: View {
+>: View where Element.ID: Sendable {
 
   public typealias Retry = () -> Void
   public typealias FailureViewBuilder = (any Error, @escaping Retry) -> Failure
@@ -55,7 +55,7 @@ public struct PaginationLoadMore<
 }
 
 extension LoadableView {
-  fileprivate typealias AppearAction = () -> Void
+  fileprivate typealias AppearAction = @MainActor @Sendable () -> Void
   fileprivate init<ErrorView: View>(
     _ store: LoadableStore<Request, State, Action>,
     @ViewBuilder onError: @escaping (any Error, @escaping AppearAction) -> ErrorView,

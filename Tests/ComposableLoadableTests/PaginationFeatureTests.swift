@@ -8,7 +8,11 @@ private struct Message: Equatable, Identifiable {
   let message: String
 }
 
+#if compiler(>=6)
+extension String: @retroactive Error {}
+#else
 extension String: Error {}
+#endif
 
 final class PaginationFeatureTests: XCTestCase {
 

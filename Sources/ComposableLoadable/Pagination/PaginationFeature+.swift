@@ -1,3 +1,5 @@
+// MARK: - Equatable Conformance
+
 extension PaginationFeature.State.Page: Equatable where Element: Equatable {
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.previous == rhs.previous
