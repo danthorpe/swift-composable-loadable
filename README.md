@@ -1,6 +1,6 @@
 # swift-composable-loadable
 
-[![CI/CD](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml/badge.svg)](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml) [![codecov](https://codecov.io/github/danthorpe/swift-composable-loadable/graph/badge.svg?token=4RI5GTSZ4F)](https://codecov.io/github/danthorpe/swift-composable-loadable)
+[![CI/CD](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml/badge.svg)](https://github.com/danthorpe/swift-composable-loadable/actions/workflows/main.yml) [![codecov](https://codecov.io/github/danthorpe/swift-composable-loadable/graph/badge.svg?token=4RI5GTSZ4F)](https://codecov.io/github/danthorpe/swift-composable-loadable) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fdanthorpe%2Fswift-composable-loadable%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/danthorpe/swift-composable-loadable) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fdanthorpe%2Fswift-composable-loadable%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/danthorpe/swift-composable-loadable)
 
 A Swift Composable Architecture component for loadable features.
 
