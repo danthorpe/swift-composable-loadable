@@ -156,6 +156,25 @@ final class ReducerBasicTests: XCTestCase {
     ) {
       $0.$counterValue.finish(request, result: Result(result))
     }
+  }
 
+  @MainActor func test__no_request_no_child_domain() async throws {
+    let randomInt = Int.random(in: 0 ... Int.max)
+    let store = TestStore(initialState: ChildlessRandomFeature.State()) {
+      ChildlessRandomFeature()
+    } withDependencies: {
+      $0.testClient.getRandomValue = {
+        randomInt
+      }
+    }
+    await store.send(.counterValue(.load)) {
+      $0.$counterValue.becomeActive()
+    }
+    let result = await TaskResult { randomInt }
+    await store.receive(
+      .counterValue(.finished(EmptyLoadRequest(), didRefresh: false, result))
+    ) {
+      $0.$counterValue.finish(Result(result))
+    }
   }
 }
