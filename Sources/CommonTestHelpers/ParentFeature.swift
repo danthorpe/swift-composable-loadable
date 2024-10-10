@@ -67,3 +67,24 @@ struct ChildlessFeature {
     }
   }
 }
+
+@Reducer
+struct ChildlessRandomFeature {
+  @ObservableState
+  struct State: Equatable {
+    @ObservationStateIgnored
+    @LoadableState<EmptyLoadRequest, Int> package var counterValue
+  }
+  enum Action: Equatable {
+    case counterValue(LoadingAction<EmptyLoadRequest, Int, NoLoadingAction>)
+  }
+  @Dependency(\.testClient.getRandomValue) var getRandomValue
+  var body: some ReducerOf<Self> {
+    Reduce { _, _ in
+      return .none
+    }
+    .loadable(\.$counterValue, action: \.counterValue) { _ in
+      try await getRandomValue()
+    }
+  }
+}

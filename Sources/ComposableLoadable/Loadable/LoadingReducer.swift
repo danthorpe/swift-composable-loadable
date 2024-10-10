@@ -54,7 +54,7 @@ extension Reducer where State: Sendable {
     )
   }
 
-  /// Integrate some LoadableState which does not require a child domain
+  /// Integrate some LoadableState which does not require a child domain with a generic Request type
   public func loadable<
     ChildState: Sendable,
     Request: Sendable
@@ -62,6 +62,27 @@ extension Reducer where State: Sendable {
     _ toLoadableState: WritableKeyPath<State, LoadableState<Request, ChildState>>,
     action toLoadingAction: CaseKeyPath<Action, LoadingAction<Request, ChildState, NoLoadingAction>>,
     load: @escaping @Sendable (Request, State) async throws -> ChildState,
+    fileID: StaticString = #fileID,
+    line: UInt = #line
+  ) -> some ReducerOf<Self> {
+    LoadingReducer(
+      parent: self,
+      child: EmptyReducer(),
+      toLoadableState: toLoadableState,
+      toLoadingAction: toLoadingAction,
+      client: LoadingClient(load: load),
+      fileID: fileID,
+      line: line
+    )
+  }
+
+  /// Integrate some LoadableState which does not require a child domain nor a Request type
+  public func loadable<
+    ChildState: Sendable
+  >(
+    _ toLoadableState: WritableKeyPath<State, LoadableState<EmptyLoadRequest, ChildState>>,
+    action toLoadingAction: CaseKeyPath<Action, LoadingAction<EmptyLoadRequest, ChildState, NoLoadingAction>>,
+    load: @escaping @Sendable (State) async throws -> ChildState,
     fileID: StaticString = #fileID,
     line: UInt = #line
   ) -> some ReducerOf<Self> {
